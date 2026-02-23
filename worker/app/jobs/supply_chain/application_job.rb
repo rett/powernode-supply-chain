@@ -2,8 +2,20 @@
 
 module SupplyChain
   class ApplicationJob < ::BaseJob
-    # Base class for all supply chain extension jobs.
-    # Inherits from the worker's BaseJob which provides
-    # API client, error handling, and retry logic.
+    # Bridge ActiveJob class methods to Sidekiq equivalents.
+    # Supply chain jobs were written with ActiveJob patterns (queue_as, retry_on)
+    # but the worker uses raw Sidekiq via BaseJob.
+
+    def self.queue_as(queue_name)
+      sidekiq_options queue: queue_name.to_s
+    end
+
+    def self.retry_on(_exception, wait: nil, attempts: 3, **_options)
+      sidekiq_options retry: attempts
+    end
+
+    def self.discard_on(*_exceptions)
+      # Sidekiq handles this via dead letter queue — no direct equivalent needed
+    end
   end
 end
