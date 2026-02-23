@@ -4,8 +4,7 @@ module SupplyChain
   class ReproducibilityVerificationJob < ApplicationJob
     queue_as :default
 
-    # Retry with exponential backoff for transient failures
-    retry_on StandardError, wait: :polynomially_longer, attempts: 3
+    sidekiq_options retry: 3
 
     def perform(provenance_id, user_id)
       provenance = ::SupplyChain::BuildProvenance.find(provenance_id)
