@@ -3,7 +3,7 @@
 Gem::Specification.new do |spec|
   spec.name          = "powernode_supply_chain"
   spec.version       = "0.1.0"
-  spec.authors       = ["Powernode"]
+  spec.authors       = ["Everett C. Haimes III"]
   spec.summary       = "Supply Chain Security extension for Powernode"
   spec.description   = "SBOM management, vulnerability scanning, container security, attestations, vendor risk, and license compliance."
   spec.license       = "Proprietary"
