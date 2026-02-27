@@ -16,7 +16,7 @@ module SupplyChain
     # Associations
     # ============================================
     belongs_to :account
-    belongs_to :repository, class_name: "Devops::Repository", optional: true
+    belongs_to :repository, class_name: "Devops::GitRepository", foreign_key: "git_repository_id", optional: true
     belongs_to :pipeline_run, class_name: "Devops::PipelineRun", optional: true
     belongs_to :created_by, class_name: "User", optional: true
 
