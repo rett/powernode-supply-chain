@@ -261,7 +261,7 @@ export const sbomsApi = {
   markFalsePositive: async (sbomId: string, vulnId: string, reason: string): Promise<SbomVulnerability> => {
     const response = await apiClient.post<ApiResponse<{
       vulnerability: SbomVulnerability;
-    }>>(`/supply_chain/sboms/${sbomId}/vulnerabilities/${vulnId}/false_positive`, { reason });
+    }>>(`/supply_chain/sboms/${sbomId}/vulnerabilities/${vulnId}/mark_false_positive`, { reason });
     return response.data.data.vulnerability;
   },
 
@@ -276,7 +276,7 @@ export const sbomsApi = {
   getComplianceStatus: async (sbomId: string): Promise<ComplianceStatus> => {
     const response = await apiClient.get<ApiResponse<{
       compliance: ComplianceStatus;
-    }>>(`/supply_chain/sboms/${sbomId}/compliance`);
+    }>>(`/supply_chain/sboms/${sbomId}/compliance_status`);
     return response.data.data.compliance;
   },
 
