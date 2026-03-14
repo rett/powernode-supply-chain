@@ -1287,7 +1287,7 @@ describe('License Compliance Hooks', () => {
 
   describe('useRejectException', () => {
     const violationId = 'violation-123';
-    const reason = 'GPL license not permitted in enterprise deployments';
+    const reason = 'GPL license not permitted in business deployments';
     const rejectedViolation = createMockLicenseViolation({
       id: violationId,
       status: 'open',

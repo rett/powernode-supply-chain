@@ -838,12 +838,12 @@ describe('licenseComplianceApi', () => {
 
       const result = await licenseComplianceApi.rejectException(
         'violation-1',
-        'GPL license not permitted in enterprise deployments'
+        'GPL license not permitted in business deployments'
       );
 
       expect(mockApiClient.post).toHaveBeenCalledWith(
         '/supply_chain/license_violations/violation-1/reject_exception',
-        { reason: 'GPL license not permitted in enterprise deployments' }
+        { reason: 'GPL license not permitted in business deployments' }
       );
       expect(result.status).toBe('open');
     });
