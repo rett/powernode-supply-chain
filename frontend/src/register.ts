@@ -57,7 +57,7 @@ export function register(): void {
     items: [
       { label: 'Overview', path: '/app/supply-chain', icon: 'Shield', permission: 'supply_chain.read', order: 1 },
       { label: 'SBOMs', path: '/app/supply-chain/sboms', icon: 'FileCode', permission: 'supply_chain.read', order: 2 },
-      { label: 'Attestations', path: '/app/supply-chain/attestations', icon: 'CheckCircle2', permission: 'supply_chain.read', order: 3 },
+      { label: 'Attestations', path: '/app/supply-chain/attestations', icon: 'CircleCheckBig', permission: 'supply_chain.read', order: 3 },
       { label: 'Container Images', path: '/app/supply-chain/containers', icon: 'Package', permission: 'supply_chain.read', order: 4 },
       { label: 'License Compliance', path: '/app/supply-chain/licenses', icon: 'Scale', permission: 'supply_chain.read', order: 5 },
       { label: 'Vendor Risk', path: '/app/supply-chain/vendors', icon: 'Building2', permission: 'supply_chain.read', order: 6 },
