@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "Software supply chain security: SBOM management, vulnerability scanning, container security, attestations, vendor risk, and license compliance.",
   "author": "Everett C. Haimes III",
+  "homepage": "https://powernode.org",
   "capabilities": ["sbom", "vulnerability_scanning", "container_security", "attestations", "vendor_risk", "license_compliance"],
   "components": {
     "server": true,
