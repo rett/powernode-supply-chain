@@ -1,0 +1,30 @@
+# Ruby / Rails
+*.gem
+*.rbc
+.bundle
+.config
+coverage
+log/*.log
+tmp/
+vendor/bundle
+.byebug_history
+
+# Node / React
+node_modules/
+build/
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Auto-generated knowledge docs (source of truth is MCP/database, synced by rails mcp:sync_docs)
+docs/knowledge/
