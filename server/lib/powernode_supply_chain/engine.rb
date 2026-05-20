@@ -10,9 +10,18 @@ module PowernodeSupplyChain
         path = root.join("app", subdir)
         app.config.autoload_paths << path.to_s if path.exist?
       end
+    end    # Tell Zeitwerk to ignore the decorators directory entirely. Files
+    # under app/decorators use Class.class_eval and don't define a constant
+    # matching their path — eager_load_all in production raises Zeitwerk::NameError
+    # without this. Mirrors the fix in extensions/system's engine.
+    initializer "#powernode_supply_chain.ignore_decorators", before: :set_autoload_paths do |_app|
+      decorators_path = root.join("app", "decorators")
+      Rails.autoloaders.main.ignore(decorators_path.to_s) if decorators_path.exist?
     end
 
-    # Load decorators that extend core models
+
+
+    # Load decorators that extend core models — explicit via load (path-based, not autoload).
     config.to_prepare do
       Dir[PowernodeSupplyChain::Engine.root.join("app", "decorators", "**", "*_decorator.rb")].each do |decorator|
         load decorator
