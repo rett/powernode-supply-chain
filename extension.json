@@ -6,6 +6,9 @@
   "author": "Everett C. Haimes III",
   "homepage": "https://powernode.org",
   "capabilities": ["sbom", "vulnerability_scanning", "container_security", "attestations", "vendor_risk", "license_compliance"],
+  "knowledge_doc_tags": {
+    "tags": ["supply_chain"]
+  },
   "components": {
     "server": true,
     "frontend": true,
