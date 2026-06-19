@@ -10,9 +10,9 @@ interface RemediationStatusSelectProps {
 }
 
 const statusStyles: Record<RemediationStatus, string> = {
-  open: 'bg-theme-error/10 text-theme-error border-theme-error/30',
-  in_progress: 'bg-theme-warning/10 text-theme-warning border-theme-warning/30',
-  fixed: 'bg-theme-success/10 text-theme-success border-theme-success/30',
+  open: 'bg-theme-error-bg text-theme-error-fg border-theme-error-border/30',
+  in_progress: 'bg-theme-warning-bg text-theme-warning-fg border-theme-warning-border/30',
+  fixed: 'bg-theme-success-bg text-theme-success-fg border-theme-success-border/30',
   wont_fix: 'bg-theme-background-secondary/10 text-theme-secondary border-theme',
 };
 

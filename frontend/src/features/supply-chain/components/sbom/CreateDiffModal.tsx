@@ -112,7 +112,7 @@ export const CreateDiffModal: React.FC<CreateDiffModalProps> = ({
                         : 'border-theme hover:border-theme'
                     }`}
                   >
-                    <p className="font-medium text-theme-primary">{sbom.name}</p>
+                    <p className="font-medium text-theme-interactive-primary">{sbom.name}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs text-theme-secondary">v{sbom.version}</span>
                       <span className="text-xs text-theme-tertiary">•</span>

@@ -101,7 +101,7 @@ export const CreateAttestationModal: React.FC<CreateAttestationModalProps> = ({
                       : 'border-theme hover:border-theme'
                   }`}
                 >
-                  <p className="font-medium text-theme-primary text-sm">{type.label}</p>
+                  <p className="font-medium text-theme-interactive-primary text-sm">{type.label}</p>
                   <p className="text-xs text-theme-secondary mt-1">{type.description}</p>
                 </button>
               ))}

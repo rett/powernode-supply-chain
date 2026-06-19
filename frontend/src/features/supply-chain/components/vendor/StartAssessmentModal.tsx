@@ -89,7 +89,7 @@ export const StartAssessmentModal: React.FC<StartAssessmentModalProps> = ({
                       : 'border-theme hover:border-theme'
                   }`}
                 >
-                  <p className="font-medium text-theme-primary">{type.label}</p>
+                  <p className="font-medium text-theme-interactive-primary">{type.label}</p>
                   <p className="text-sm text-theme-secondary mt-1">{type.description}</p>
                 </button>
               ))}

@@ -34,17 +34,17 @@ const StatCard: React.FC<StatCardProps> = ({
   onClick
 }) => {
   const statusColors = {
-    success: 'text-theme-success',
-    warning: 'text-theme-warning',
-    error: 'text-theme-error',
+    success: 'text-theme-success-fg',
+    warning: 'text-theme-warning-fg',
+    error: 'text-theme-error-fg',
     neutral: 'text-theme-primary'
   };
 
   const statusBgColors = {
-    success: 'bg-theme-success/10',
-    warning: 'bg-theme-warning/10',
-    error: 'bg-theme-error/10',
-    neutral: 'bg-theme-primary/10'
+    success: 'bg-theme-success-bg',
+    warning: 'bg-theme-warning-bg',
+    error: 'bg-theme-error-bg',
+    neutral: 'bg-theme-interactive-primary/10'
   };
 
   return (
@@ -85,8 +85,8 @@ const QuickLinkCard: React.FC<QuickLinkCardProps> = ({
       className="bg-theme-surface border border-theme rounded-lg p-4 cursor-pointer hover:border-theme-primary transition-colors"
     >
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-theme-primary/10">
-          <Icon className="w-5 h-5 text-theme-primary" />
+        <div className="p-2 rounded-lg bg-theme-interactive-primary/10">
+          <Icon className="w-5 h-5 text-theme-interactive-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-medium text-theme-primary truncate">{name}</h3>
@@ -113,9 +113,9 @@ const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
   const getSeverityColor = (severity: string): string => {
     switch (severity.toLowerCase()) {
       case 'critical':
-        return 'text-theme-error';
+        return 'text-theme-error-fg';
       case 'high':
-        return 'text-theme-warning';
+        return 'text-theme-warning-fg';
       case 'medium':
         return 'text-theme-primary';
       default:
@@ -126,11 +126,11 @@ const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
   const getSeverityBgColor = (severity: string): string => {
     switch (severity.toLowerCase()) {
       case 'critical':
-        return 'bg-theme-error/10';
+        return 'bg-theme-error-bg';
       case 'high':
-        return 'bg-theme-warning/10';
+        return 'bg-theme-warning-bg';
       case 'medium':
-        return 'bg-theme-primary/10';
+        return 'bg-theme-interactive-primary/10';
       default:
         return 'bg-theme-secondary/10';
     }
@@ -168,7 +168,7 @@ const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
         </div>
       ) : (
         <div className="text-center py-8">
-          <CheckCircle2 className="w-8 h-8 text-theme-success mx-auto mb-2" />
+          <CheckCircle2 className="w-8 h-8 text-theme-success-fg mx-auto mb-2" />
           <p className="text-sm text-theme-secondary">No recent alerts</p>
         </div>
       )}
@@ -230,8 +230,8 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities }) => {
                 key={`${activity.type}-${index}`}
                 className="flex items-start gap-3 p-2 rounded hover:bg-theme-secondary/5 transition-colors"
               >
-                <div className="p-1.5 rounded bg-theme-primary/10">
-                  <IconComponent className="w-4 h-4 text-theme-primary" />
+                <div className="p-1.5 rounded bg-theme-interactive-primary/10">
+                  <IconComponent className="w-4 h-4 text-theme-interactive-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-theme-primary">{activity.title}</p>
@@ -311,8 +311,8 @@ export function SupplyChainDashboardPage() {
         breadcrumbs={breadcrumbs}
         actions={actions}
       >
-        <div className="bg-theme-error/10 border border-theme-error/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-theme-error">
+        <div className="bg-theme-error-bg border border-theme-error-border/30 rounded-lg p-4">
+          <div className="flex items-center gap-2 text-theme-error-fg">
             <AlertTriangle className="w-5 h-5" />
             <span className="font-medium">Failed to load dashboard</span>
           </div>
@@ -451,8 +451,8 @@ export function SupplyChainDashboardPage() {
 
         {/* Security Status */}
         {(data.critical_vulnerabilities > 0 || data.quarantined_images > 0 || data.high_risk_vendors > 0 || data.open_vulnerabilities > 0) && (
-          <div className="bg-theme-warning/10 border border-theme-warning/30 rounded-lg p-4">
-            <h3 className="font-semibold text-theme-warning flex items-center gap-2 mb-3">
+          <div className="bg-theme-warning-bg border border-theme-warning-border/30 rounded-lg p-4">
+            <h3 className="font-semibold text-theme-warning-fg flex items-center gap-2 mb-3">
               <Shield className="w-5 h-5" />
               Security Attention Required
             </h3>

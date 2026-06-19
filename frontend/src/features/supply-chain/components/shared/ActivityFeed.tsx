@@ -62,8 +62,8 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ items, maxItems = 5 
           const Icon = entityIcons[item.entity_type] || FileCode;
           return (
             <div key={item.id} className="flex items-start gap-3">
-              <div className="p-1.5 rounded bg-theme-primary/10">
-                <Icon className="w-4 h-4 text-theme-primary" />
+              <div className="p-1.5 rounded bg-theme-interactive-primary/10">
+                <Icon className="w-4 h-4 text-theme-interactive-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-theme-primary">

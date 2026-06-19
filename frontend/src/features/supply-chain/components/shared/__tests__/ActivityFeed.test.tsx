@@ -214,7 +214,7 @@ describe('ActivityFeed', () => {
       const { container } = render(<ActivityFeed items={[item]} />);
       const iconContainer = container.querySelector('div[class*="p-1.5"]');
       expect(iconContainer).toHaveClass('rounded');
-      expect(iconContainer).toHaveClass('bg-theme-primary/10');
+      expect(iconContainer).toHaveClass('bg-theme-interactive-primary/10');
     });
   });
 
