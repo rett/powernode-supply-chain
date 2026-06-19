@@ -142,9 +142,5 @@ FactoryBot.define do
       auto_executable { true }
       confidence_score { 0.95 }
     end
-
-    trait :with_workflow_run do
-      association :workflow_run, factory: :ai_workflow_run
-    end
   end
 end

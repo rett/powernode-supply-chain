@@ -12,8 +12,6 @@ RSpec.describe SupplyChain::RemediationPlan, type: :model do
   describe "associations" do
     it { is_expected.to belong_to(:account) }
     it { is_expected.to belong_to(:sbom).class_name("SupplyChain::Sbom") }
-    # TODO: Enable when AiWorkflowRun model is created
-    # it { is_expected.to belong_to(:workflow_run).class_name("AiWorkflowRun").optional }
     it { is_expected.to belong_to(:created_by).class_name("User").optional }
     it { is_expected.to belong_to(:approved_by).class_name("User").optional }
   end
