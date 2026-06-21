@@ -1,20 +1,14 @@
 # frozen_string_literal: true
 
-# Supply-chain extension seed orchestrator (formal contract — explicit list, no
-# glob). Invoked by the parent platform's db/seeds.rb extension loop, which runs
-# AFTER core seeds (so the shared KB categories created by core's
-# knowledge_base_articles.rb already exist when kb/*.rb does find_by!(category)).
-# Order: data templates first, then KB articles.
+# Supply-chain extension seed orchestrator (formal contract — explicit lists, no
+# glob). Invoked by the parent platform's db/seeds.rb extension loop, AFTER core
+# seeds (so shared KB categories exist for kb/*.rb). CORE = account-independent
+# reference data (always). DEMO = account-scoped KB articles (need an admin
+# author), gated by Powernode::Seeds.demo? (POWERNODE_SEED_DEMO / dev-test).
 ext_seeds = File.expand_path("seeds", __dir__)
+seed_demo = !defined?(Powernode::Seeds) || Powernode::Seeds.demo?
 
-SUPPLY_CHAIN_SEED_FILES = %w[
-  supply_chain_licenses.rb
-  supply_chain_scan_templates.rb
-  supply_chain_questionnaire_templates.rb
-  kb/supply_chain_articles.rb
-].freeze
-
-SUPPLY_CHAIN_SEED_FILES.each do |seed_file|
+load_seed = lambda do |seed_file|
   path = File.join(ext_seeds, seed_file)
   next unless File.exist?(path)
 
@@ -25,3 +19,16 @@ SUPPLY_CHAIN_SEED_FILES.each do |seed_file|
     puts "  ❌ #{seed_file} failed: #{e.message}"
   end
 end
+
+CORE_SEED_FILES = %w[
+  supply_chain_licenses.rb
+  supply_chain_scan_templates.rb
+  supply_chain_questionnaire_templates.rb
+].freeze
+
+DEMO_SEED_FILES = %w[
+  kb/supply_chain_articles.rb
+].freeze
+
+CORE_SEED_FILES.each(&load_seed)
+DEMO_SEED_FILES.each(&load_seed) if seed_demo
