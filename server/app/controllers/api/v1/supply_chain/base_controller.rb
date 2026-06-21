@@ -29,6 +29,16 @@ module Api
           render_error("Insufficient permissions for supply chain administration", status: :forbidden)
         end
 
+        # Signing keys are cryptographic material. Managing them (create/update/
+        # destroy/rotate/revoke) requires a custodian permission distinct from the
+        # generic supply_chain.write, so a data operator cannot rotate or revoke
+        # keys. Viewing key metadata / public keys stays under supply_chain.read.
+        def require_signing_keys_permission
+          return if current_user.has_permission?("supply_chain.signing_keys.manage")
+
+          render_error("Insufficient permissions to manage signing keys", status: :forbidden)
+        end
+
         def current_account
           @current_account ||= current_user.account
         end

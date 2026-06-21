@@ -45,6 +45,28 @@ module PowernodeSupplyChain
       end
     end
 
+    # Register supply-chain permissions + role grants via the catalog DSL.
+    # Replaces the retired imperative db/seeds/supply_chain_permissions.rb (whose
+    # role grants Role#sync_permissions! wiped on every db:seed anyway). The coarse
+    # read/write/admin tiers match controller enforcement; signing_keys.manage is a
+    # crypto-custodian carve-out (key create/rotate/revoke) NOT given to manager.
+    initializer "powernode_supply_chain.register_permissions", after: :load_config_initializers do
+      config.after_initialize do
+        next unless defined?(::Permissions) && ::Permissions.respond_to?(:register_catalog)
+
+        ::Permissions.register_catalog(namespace: "supply_chain") do
+          permission "supply_chain.read", "View all supply chain data (SBOMs, scans, vendors, licenses, attestations)",
+                     grant: { owner: true, admin: true, manager: true, member: true }
+          permission "supply_chain.write", "Manage supply chain data (create/update/scan/assess)",
+                     grant: { owner: true, admin: true, manager: true }
+          permission "supply_chain.admin", "Administer supply chain settings, sync feeds, approve exceptions",
+                     grant: { owner: true, admin: true }
+          # Crypto custodian — signing-key lifecycle; NOT granted to manager.
+          resource :signing_keys, actions: %i[manage], grant: { owner: :all, admin: :all }
+        end
+      end
+    end
+
     # Register supply chain step handlers with the DevOps StepHandlerRegistry
     initializer "powernode_supply_chain.step_handlers", after: :load_config_initializers do
       config.after_initialize do
