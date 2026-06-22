@@ -78,8 +78,16 @@ module Api
             }
           )
 
-          # Queue the execution
-          ::SupplyChain::ScanExecutionJob.perform_later(execution.id)
+          # Queue the execution on the worker (API-only; degrade gracefully if down)
+          begin
+            WorkerJobService.enqueue_job(
+              "SupplyChain::ScanExecutionJob",
+              args: [ execution.id ],
+              queue: "supply_chain_scans"
+            )
+          rescue WorkerJobService::WorkerServiceError => e
+            Rails.logger.warn "[ScanInstancesController] Worker unavailable for scan execution: #{e.message}"
+          end
 
           render_success(
             { scan_execution: serialize_execution(execution) },

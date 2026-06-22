@@ -543,12 +543,14 @@ RSpec.describe "Api::V1::SupplyChain::CveMonitors", type: :request do
 
     context "with supply_chain.write permission" do
       it "enqueues the CVE monitoring job" do
-        expect {
-          post "/api/v1/supply_chain/cve_monitors/#{monitor.id}/run",
-               headers: auth_headers_for(supply_chain_writer),
-               as: :json
-        }.to have_enqueued_job(SupplyChain::CveMonitoringJob).with(monitor.id)
+        allow(WorkerJobService).to receive(:enqueue_job)
 
+        post "/api/v1/supply_chain/cve_monitors/#{monitor.id}/run",
+             headers: auth_headers_for(supply_chain_writer),
+             as: :json
+
+        expect(WorkerJobService).to have_received(:enqueue_job)
+          .with("SupplyChain::CveMonitoringJob", hash_including(args: [ monitor.id ]))
         expect_success_response
         expect(json_response["data"]["message"]).to eq("CVE monitoring job queued")
         expect(json_response["data"]["cve_monitor"]["id"]).to eq(monitor.id)
@@ -706,17 +708,22 @@ RSpec.describe "Api::V1::SupplyChain::CveMonitors", type: :request do
       end
 
       it "enqueues jobs for all active monitors in the account" do
-        active_monitors.each do |monitor|
-          expect(SupplyChain::CveMonitoringJob).to receive(:perform_later).with(monitor.id)
-        end
-
-        # Ensure inactive and other account monitors are not queued
-        expect(SupplyChain::CveMonitoringJob).not_to receive(:perform_later).with(inactive_monitor.id)
-        expect(SupplyChain::CveMonitoringJob).not_to receive(:perform_later).with(other_account_monitor.id)
+        allow(WorkerJobService).to receive(:enqueue_job)
 
         post "/api/v1/supply_chain/cve_monitors/run_all",
              headers: auth_headers_for(supply_chain_writer),
              as: :json
+
+        active_monitors.each do |monitor|
+          expect(WorkerJobService).to have_received(:enqueue_job)
+            .with("SupplyChain::CveMonitoringJob", hash_including(args: [ monitor.id ]))
+        end
+
+        # Ensure inactive and other account monitors are not queued
+        expect(WorkerJobService).not_to have_received(:enqueue_job)
+          .with("SupplyChain::CveMonitoringJob", hash_including(args: [ inactive_monitor.id ]))
+        expect(WorkerJobService).not_to have_received(:enqueue_job)
+          .with("SupplyChain::CveMonitoringJob", hash_including(args: [ other_account_monitor.id ]))
 
         expect_success_response
         expect(json_response["data"]["message"]).to eq("CVE monitoring jobs queued")

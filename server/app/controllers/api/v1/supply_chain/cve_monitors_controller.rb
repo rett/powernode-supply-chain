@@ -59,7 +59,15 @@ module Api
 
         # POST /api/v1/supply_chain/cve_monitors/:id/run
         def run
-          ::SupplyChain::CveMonitoringJob.perform_later(@monitor.id)
+          begin
+            WorkerJobService.enqueue_job(
+              "SupplyChain::CveMonitoringJob",
+              args: [ @monitor.id ],
+              queue: "supply_chain_monitoring"
+            )
+          rescue WorkerJobService::WorkerServiceError => e
+            Rails.logger.warn "[CveMonitorsController] Worker unavailable for CVE monitoring: #{e.message}"
+          end
 
           render_success({
             message: "CVE monitoring job queued",
@@ -81,8 +89,16 @@ module Api
         # POST /api/v1/supply_chain/cve_monitors/run_all
         def run_all
           monitors = current_account.supply_chain_cve_monitors.where(is_active: true)
-          monitors.each do |monitor|
-            ::SupplyChain::CveMonitoringJob.perform_later(monitor.id)
+          begin
+            monitors.each do |monitor|
+              WorkerJobService.enqueue_job(
+                "SupplyChain::CveMonitoringJob",
+                args: [ monitor.id ],
+                queue: "supply_chain_monitoring"
+              )
+            end
+          rescue WorkerJobService::WorkerServiceError => e
+            Rails.logger.warn "[CveMonitorsController] Worker unavailable for CVE monitoring: #{e.message}"
           end
 
           render_success({

@@ -46,8 +46,16 @@ module Api
           )
           @provenance.update!(metadata: updated_metadata)
 
-          # Queue the verification job
-          ::SupplyChain::ReproducibilityVerificationJob.perform_later(@provenance.id, current_user.id)
+          # Queue the verification job on the worker (API-only; degrade gracefully if down)
+          begin
+            WorkerJobService.enqueue_job(
+              "SupplyChain::ReproducibilityVerificationJob",
+              args: [ @provenance.id, current_user.id ],
+              queue: "default"
+            )
+          rescue WorkerJobService::WorkerServiceError => e
+            Rails.logger.warn "[BuildProvenanceController] Worker unavailable for reproducibility verification: #{e.message}"
+          end
 
           render_success(
             { build_provenance: serialize_provenance(@provenance) },

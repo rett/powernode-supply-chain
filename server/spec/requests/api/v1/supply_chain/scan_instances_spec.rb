@@ -494,7 +494,7 @@ RSpec.describe "Api::V1::SupplyChain::ScanInstances", type: :request do
       end
 
       it "enqueues ScanExecutionJob" do
-        expect(::SupplyChain::ScanExecutionJob).to receive(:perform_later)
+        expect(WorkerJobService).to receive(:enqueue_job).with("SupplyChain::ScanExecutionJob", anything)
 
         post "/api/v1/supply_chain/scan_instances/#{scan_instance.id}/execute",
              params: valid_execute_params,

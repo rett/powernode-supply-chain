@@ -142,7 +142,7 @@ RSpec.describe 'Api::V1::SupplyChain::BuildProvenance', type: :request do
 
     context 'with proper permissions' do
       it 'starts reproducibility verification' do
-        allow(::SupplyChain::ReproducibilityVerificationJob).to receive(:perform_later)
+        allow(WorkerJobService).to receive(:enqueue_job)
 
         post "/api/v1/supply_chain/build_provenance/#{provenance.id}/verify_reproducibility",
              headers: headers,
@@ -152,8 +152,8 @@ RSpec.describe 'Api::V1::SupplyChain::BuildProvenance', type: :request do
         data = json_response_data
         expect(data['build_provenance']['reproducibility_status']).to eq('verifying')
 
-        expect(::SupplyChain::ReproducibilityVerificationJob)
-          .to have_received(:perform_later).with(provenance.id, user.id)
+        expect(WorkerJobService)
+          .to have_received(:enqueue_job).with("SupplyChain::ReproducibilityVerificationJob", hash_including(args: [ provenance.id, user.id ]))
       end
 
       it 'returns error when verification already in progress' do
