@@ -67,6 +67,39 @@ module PowernodeSupplyChain
       end
     end
 
+    # Register this extension's audit ACTIONS via the AuditActions seam (the
+    # audit twin of register_catalog). The supply_chain.* action tokens were
+    # relocated out of core's AuditActions concern — they are emitted by the
+    # supply-chain API controllers' log_audit_event(...) calls. AuditLog#action
+    # validates against the dynamic AuditActions.all_actions union, so once this
+    # runs at boot those audit rows validate. supply-chain is a public extension
+    # (always loaded unless explicitly disabled), so these are registered in
+    # both core and full modes.
+    initializer "powernode_supply_chain.register_audit_actions", after: :load_config_initializers do
+      config.after_initialize do
+        next unless defined?(::AuditActions) && ::AuditActions.respond_to?(:register_actions)
+
+        supply_chain_actions = %w[
+          supply_chain.attestations.create supply_chain.attestations.delete supply_chain.attestations.read
+          supply_chain.attestations.record_to_rekor supply_chain.attestations.sign supply_chain.attestations.update
+          supply_chain.attestations.verify
+          supply_chain.container_images.create supply_chain.container_images.delete supply_chain.container_images.evaluate_policies
+          supply_chain.container_images.quarantine supply_chain.container_images.read supply_chain.container_images.scan
+          supply_chain.container_images.update supply_chain.container_images.verify
+          supply_chain.reports.create supply_chain.reports.delete supply_chain.reports.download
+          supply_chain.reports.generate_attribution supply_chain.reports.generate_compliance supply_chain.reports.generate_sbom
+          supply_chain.reports.generate_vendor_risk supply_chain.reports.generate_vulnerability supply_chain.reports.read
+          supply_chain.reports.regenerate supply_chain.reports.update
+          supply_chain.sboms.calculate_risk supply_chain.sboms.correlate_vulnerabilities supply_chain.sboms.create
+          supply_chain.sboms.delete supply_chain.sboms.export supply_chain.sboms.read supply_chain.sboms.update
+          supply_chain.vendors.assess supply_chain.vendors.create supply_chain.vendors.delete
+          supply_chain.vendors.read supply_chain.vendors.reassess supply_chain.vendors.update
+        ]
+
+        ::AuditActions.register_actions("supply_chain", supply_chain_actions)
+      end
+    end
+
     # Register supply chain step handlers with the DevOps StepHandlerRegistry
     initializer "powernode_supply_chain.step_handlers", after: :load_config_initializers do
       config.after_initialize do
