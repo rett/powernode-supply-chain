@@ -346,7 +346,13 @@ scan_templates = [
 ]
 
 scan_templates.each do |template_data|
-  template = SupplyChain::ScanTemplate.find_or_initialize_by(slug: template_data[:slug])
+  # Key on name, not slug: ScanTemplate#generate_slug (before_validation) derives
+  # slug from name on create, overriding any slug we assign here. For templates
+  # whose hand-written slug differs from the name-derived one (e.g.
+  # "container-trivy-scan" vs "container-image-scan-trivy"), find_or_initialize_by(slug:)
+  # never matched the persisted row and re-created it every seed. name is the
+  # stable natural key for these system templates.
+  template = SupplyChain::ScanTemplate.find_or_initialize_by(name: template_data[:name])
   template.assign_attributes(template_data)
   template.save!
   print "."
