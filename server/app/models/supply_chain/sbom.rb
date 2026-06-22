@@ -59,7 +59,7 @@ module SupplyChain
     scope :draft, -> { where(status: "draft") }
     scope :failed, -> { where(status: "failed") }
     scope :recent, -> { order(created_at: :desc) }
-    scope :by_repository, ->(repo_id) { where(repository_id: repo_id) }
+    scope :by_repository, ->(repo_id) { where(git_repository_id: repo_id) }
     scope :by_format, ->(format) { where(format: format) }
     scope :ntia_compliant, -> { where(ntia_minimum_compliant: true) }
     scope :with_vulnerabilities, -> { where("vulnerability_count > 0") }

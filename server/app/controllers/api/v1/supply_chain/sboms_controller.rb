@@ -16,7 +16,7 @@ module Api
 
           sboms = sboms.where(status: params[:status]) if params[:status].present?
           sboms = sboms.where(format: params[:format]) if params[:format].present?
-          sboms = sboms.where(repository_id: params[:repository_id]) if params[:repository_id].present?
+          sboms = sboms.where(git_repository_id: params[:repository_id]) if params[:repository_id].present?
 
           sboms = sboms.page(params[:page]).per(params[:per_page] || 20)
 
