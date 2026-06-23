@@ -227,7 +227,7 @@ class SupplyChainChannel < ApplicationCable::Channel
         report_type: report.report_type,
         name: report.name,
         status: report.status,
-        file_size: report.file_size,
+        file_size: report.file_size_bytes,
         timestamp: Time.current.iso8601
       }
 

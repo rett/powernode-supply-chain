@@ -284,6 +284,68 @@ Rails.application.routes.draw do
         get :analytics, to: "dashboard#analytics"
         get :compliance_summary, to: "dashboard#compliance_summary"
       end
+
+      # Internal (worker-only, mTLS) endpoints. The standalone Sidekiq worker's
+      # SupplyChain::*Job classes POST here so all ActiveRecord + ActionCable work
+      # runs server-side; the worker stays HTTP-only. Controllers subclass core's
+      # Api::V1::Internal::InternalBaseController (mTLS worker auth).
+      namespace :internal do
+        namespace :supply_chain do
+          resources :sboms, only: [] do
+            member do
+              post :vulnerability_scan
+            end
+            collection do
+              post :generate
+            end
+          end
+
+          resources :container_images, only: [] do
+            member do
+              post :scan
+            end
+          end
+
+          resources :cve_monitors, only: [] do
+            member do
+              post :run
+            end
+            collection do
+              post :run_all
+            end
+          end
+
+          resources :vendors, only: [] do
+            collection do
+              post :monitor
+            end
+          end
+
+          resources :scan_executions, only: [] do
+            member do
+              post :run
+            end
+          end
+
+          resources :reports, only: [] do
+            member do
+              post :generate
+            end
+          end
+
+          resources :vulnerability_feeds, only: [] do
+            member do
+              post :sync
+            end
+          end
+
+          resources :build_provenance, only: [] do
+            member do
+              post :verify
+            end
+          end
+        end
+      end
     end
   end
 end
