@@ -327,7 +327,7 @@ Explore detailed guides:
 
 ---
 
-Questions about supply chain security? Contact security@powernode.org
+Questions about supply chain security? ask in [GitHub Discussions](https://github.com/nodealchemy/powernode-platform/discussions)
 MARKDOWN
 
 KnowledgeBase::Article.find_or_create_by!(slug: "supply-chain-security-overview") do |article|
@@ -795,7 +795,7 @@ Attestation Verification:
 
 ---
 
-Need help with SBOM management? Contact security@powernode.org
+Need help with SBOM management? ask in [GitHub Discussions](https://github.com/nodealchemy/powernode-platform/discussions)
 MARKDOWN
 
 KnowledgeBase::Article.find_or_create_by!(slug: "sbom-management-analysis") do |article|
@@ -1304,7 +1304,7 @@ Audit Report Contents:
 
 ---
 
-Need help with vendor assessments? Contact security@powernode.org
+Need help with vendor assessments? ask in [GitHub Discussions](https://github.com/nodealchemy/powernode-platform/discussions)
 MARKDOWN
 
 KnowledgeBase::Article.find_or_create_by!(slug: "vendor-risk-assessment") do |article|
