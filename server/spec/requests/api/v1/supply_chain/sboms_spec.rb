@@ -757,6 +757,62 @@ RSpec.describe "Api::V1::SupplyChain::Sboms", type: :request do
     end
   end
 
+  describe "POST /api/v1/supply_chain/sboms/:id/rescan" do
+    let(:sbom) { create(:supply_chain_sbom, account: account) }
+
+    context "with supply_chain.write permission" do
+      it "re-runs vulnerability correlation + risk scoring and returns the sbom" do
+        allow_any_instance_of(SupplyChain::VulnerabilityCorrelationService).to receive(:correlate!).and_return(7)
+        allow_any_instance_of(SupplyChain::RiskCalculationService).to receive(:calculate!).and_return(
+          { overall_score: 42 }
+        )
+
+        post "/api/v1/supply_chain/sboms/#{sbom.id}/rescan",
+             headers: auth_headers_for(supply_chain_writer),
+             as: :json
+
+        expect_success_response
+        data = json_response["data"]
+
+        expect(data["sbom"]["id"]).to eq(sbom.id)
+        expect(data["vulnerabilities_found"]).to eq(7)
+        expect(data["message"]).to eq("SBOM re-scan completed")
+      end
+
+      it "returns error when the rescan fails" do
+        allow_any_instance_of(SupplyChain::VulnerabilityCorrelationService).to receive(:correlate!).and_raise(
+          StandardError.new("Feed unavailable")
+        )
+
+        post "/api/v1/supply_chain/sboms/#{sbom.id}/rescan",
+             headers: auth_headers_for(supply_chain_writer),
+             as: :json
+
+        expect_error_response("Re-scan failed: Feed unavailable", 422)
+      end
+
+      it "returns not found for another account's sbom" do
+        other_sbom = create(:supply_chain_sbom, account: other_account)
+
+        post "/api/v1/supply_chain/sboms/#{other_sbom.id}/rescan",
+             headers: auth_headers_for(supply_chain_writer),
+             as: :json
+
+        expect_error_response("SBOM not found", 404)
+      end
+    end
+
+    context "without supply_chain.write permission" do
+      it "returns forbidden error" do
+        post "/api/v1/supply_chain/sboms/#{sbom.id}/rescan",
+             headers: auth_headers_for(supply_chain_reader),
+             as: :json
+
+        expect_error_response("Insufficient permissions to manage supply chain data", 403)
+      end
+    end
+  end
+
   describe "GET /api/v1/supply_chain/sboms/statistics" do
     context "with supply_chain.read permission" do
       before do

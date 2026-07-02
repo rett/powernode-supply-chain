@@ -13,6 +13,7 @@ Rails.application.routes.draw do
             get :compliance_status
             post :correlate_vulnerabilities
             post :calculate_risk
+            post :rescan
           end
 
           collection do

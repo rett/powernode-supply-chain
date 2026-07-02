@@ -5,8 +5,8 @@ module Api
     module SupplyChain
       class SbomsController < BaseController
         before_action :require_read_permission, only: [ :index, :show, :components, :vulnerabilities, :compliance_status, :statistics ]
-        before_action :require_write_permission, only: [ :create, :update, :destroy, :export, :correlate_vulnerabilities, :calculate_risk ]
-        before_action :set_sbom, only: [ :show, :update, :destroy, :components, :vulnerabilities, :export, :compliance_status, :correlate_vulnerabilities, :calculate_risk ]
+        before_action :require_write_permission, only: [ :create, :update, :destroy, :export, :correlate_vulnerabilities, :calculate_risk, :rescan ]
+        before_action :set_sbom, only: [ :show, :update, :destroy, :components, :vulnerabilities, :export, :compliance_status, :correlate_vulnerabilities, :calculate_risk, :rescan ]
 
         # GET /api/v1/supply_chain/sboms
         def index
@@ -198,6 +198,28 @@ module Api
           log_audit_event("supply_chain.sboms.calculate_risk", @sbom)
         rescue StandardError => e
           render_error("Risk calculation failed: #{e.message}", status: :unprocessable_content)
+        end
+
+        # POST /api/v1/supply_chain/sboms/:id/rescan
+        #
+        # Re-runs the real scan pipeline for an existing SBOM: vulnerability
+        # correlation followed by risk recalculation (the same services the
+        # worker's SupplyChain::VulnerabilityScanJob drives via the internal
+        # vulnerability_scan endpoint), then returns the refreshed SBOM.
+        def rescan
+          count = ::SupplyChain::VulnerabilityCorrelationService.new(sbom: @sbom).correlate!
+          ::SupplyChain::RiskCalculationService.new(sbom: @sbom).calculate!
+
+          render_success({
+            sbom: serialize_sbom(@sbom.reload, include_repository: true),
+            vulnerabilities_found: count,
+            message: "SBOM re-scan completed"
+          })
+
+          log_audit_event("supply_chain.sboms.rescan", @sbom)
+        rescue StandardError => e
+          Rails.logger.error "[SbomsController] Rescan failed: #{e.message}"
+          render_error("Re-scan failed: #{e.message}", status: :unprocessable_content)
         end
 
         # GET /api/v1/supply_chain/sboms/statistics
