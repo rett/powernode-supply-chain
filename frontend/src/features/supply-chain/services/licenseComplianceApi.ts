@@ -153,11 +153,13 @@ export const licenseComplianceApi = {
     return response.data.data.violation;
   },
 
+  // "Grant Exception" maps to the backend's approve_exception action —
+  // there is no grant_exception route.
   grantException: async (id: string, note: string): Promise<LicenseViolation> => {
     const response = await apiClient.post<ApiResponse<{
-      violation: LicenseViolation;
-    }>>(`/supply_chain/license_violations/${id}/grant_exception`, { note });
-    return response.data.data.violation;
+      license_violation: LicenseViolation;
+    }>>(`/supply_chain/license_violations/${id}/approve_exception`, { notes: note });
+    return response.data.data.license_violation;
   },
 
   // Exception workflow methods

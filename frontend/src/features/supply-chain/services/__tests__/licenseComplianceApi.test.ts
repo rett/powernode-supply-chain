@@ -640,11 +640,11 @@ describe('licenseComplianceApi', () => {
       created_at: '2024-01-10T00:00:00Z',
     };
 
-    it('grants exception with note', async () => {
+    it('grants exception via the backend approve_exception action', async () => {
       mockApiClient.post.mockResolvedValue(
         createMockAxiosResponse({
           success: true,
-          data: { violation: exceptionViolation },
+          data: { license_violation: exceptionViolation },
         })
       );
 
@@ -654,8 +654,8 @@ describe('licenseComplianceApi', () => {
       );
 
       expect(mockApiClient.post).toHaveBeenCalledWith(
-        '/supply_chain/license_violations/violation-1/grant_exception',
-        { note: 'Internal corporate dependency' }
+        '/supply_chain/license_violations/violation-1/approve_exception',
+        { notes: 'Internal corporate dependency' }
       );
       expect(result.status).toBe('exception_granted');
     });
