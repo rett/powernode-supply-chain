@@ -28,6 +28,26 @@ module PowernodeSupplyChain
       end
     end
 
+    # Register this extension's polymorphic file attachable types with the core
+    # Powernode::AttachableRegistry seam (core owns only "Page"). Uses to_prepare
+    # so registration re-applies on every dev reload — the registry's resolver
+    # store is reset when the core class reloads. Each resolver reads the
+    # account_decorator's supply_chain_* associations at request time.
+    config.to_prepare do
+      if defined?(::Powernode::AttachableRegistry)
+        {
+          "SupplyChain::Sbom" => :supply_chain_sboms,
+          "SupplyChain::Attestation" => :supply_chain_attestations,
+          "SupplyChain::ContainerImage" => :supply_chain_container_images,
+          "SupplyChain::Vendor" => :supply_chain_vendors
+        }.each do |type, association|
+          ::Powernode::AttachableRegistry.register(type) do |account, id|
+            account.public_send(association).find_by(id: id)
+          end
+        end
+      end
+    end
+
     # Add extension migrations to the application migration paths
     initializer "powernode_supply_chain.migrations" do |app|
       path = root.join("db", "migrate")
