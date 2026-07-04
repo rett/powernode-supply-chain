@@ -91,7 +91,8 @@ module PowernodeSupplyChain
           supply_chain.reports.generate_vendor_risk supply_chain.reports.generate_vulnerability supply_chain.reports.read
           supply_chain.reports.regenerate supply_chain.reports.update
           supply_chain.sboms.calculate_risk supply_chain.sboms.correlate_vulnerabilities supply_chain.sboms.create
-          supply_chain.sboms.delete supply_chain.sboms.export supply_chain.sboms.read supply_chain.sboms.update
+          supply_chain.sboms.delete supply_chain.sboms.export supply_chain.sboms.read supply_chain.sboms.rescan
+          supply_chain.sboms.update
           supply_chain.vendors.assess supply_chain.vendors.create supply_chain.vendors.delete
           supply_chain.vendors.read supply_chain.vendors.reassess supply_chain.vendors.update
         ]
