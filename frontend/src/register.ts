@@ -1,25 +1,40 @@
-import { lazy } from 'react';
+import { ComponentType, lazy } from 'react';
 import { featureRegistry } from '@/shared/services/featureRegistry';
 
+// Helper: widen the lazy-loaded module's default-export type from the concrete
+// `FC<P>` it was authored as to the `ComponentType<unknown>` that
+// `featureRegistry.FeatureRoute.component` expects. Every page is a different
+// `FC<P>` but the registry stores them in one typed list, and `FC<{}>` does not
+// satisfy `FC<unknown>` under React's strict prop variance. The cast happens
+// here, once, instead of at every call site.
+//
+// Not generic over the props type: these loaders re-wrap a named export as
+// `.then(m => ({ default: m.Named }))`, and inferring a type parameter through
+// that re-wrap makes tsc resolve it to `never`.
+const lazyPage = (
+  loader: () => Promise<{ default: unknown }>
+) => lazy(loader as () => Promise<{ default: ComponentType<unknown> }>);
+
+
 // Lazy-loaded supply chain page components
-const SupplyChainDashboardPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.SupplyChainDashboardPage })));
-const SbomsPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.SbomsPage })));
-const SbomDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.SbomDetailPage })));
-const SbomDiffPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.SbomDiffPage })));
-const ContainerImagesPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.ContainerImagesPage })));
-const ContainerImageDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.ContainerImageDetailPage })));
-const AttestationsPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.AttestationsPage })));
-const AttestationDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.AttestationDetailPage })));
-const VendorsPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.VendorsPage })));
-const VendorDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.VendorDetailPage })));
-const VendorRiskDashboardPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.VendorRiskDashboardPage })));
-const AssessmentDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.AssessmentDetailPage })));
-const QuestionnaireDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.QuestionnaireDetailPage })));
-const LicensePoliciesPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicensePoliciesPage })));
-const LicensePolicyFormPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicensePolicyFormPage })));
-const LicensePolicyDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicensePolicyDetailPage })));
-const LicenseViolationsPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicenseViolationsPage })));
-const LicenseViolationDetailPage = lazy(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicenseViolationDetailPage })));
+const SupplyChainDashboardPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.SupplyChainDashboardPage })));
+const SbomsPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.SbomsPage })));
+const SbomDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.SbomDetailPage })));
+const SbomDiffPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.SbomDiffPage })));
+const ContainerImagesPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.ContainerImagesPage })));
+const ContainerImageDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.ContainerImageDetailPage })));
+const AttestationsPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.AttestationsPage })));
+const AttestationDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.AttestationDetailPage })));
+const VendorsPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.VendorsPage })));
+const VendorDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.VendorDetailPage })));
+const VendorRiskDashboardPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.VendorRiskDashboardPage })));
+const AssessmentDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.AssessmentDetailPage })));
+const QuestionnaireDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.QuestionnaireDetailPage })));
+const LicensePoliciesPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicensePoliciesPage })));
+const LicensePolicyFormPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicensePolicyFormPage })));
+const LicensePolicyDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicensePolicyDetailPage })));
+const LicenseViolationsPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicenseViolationsPage })));
+const LicenseViolationDetailPage = lazyPage(() => import('./features/supply-chain/pages').then(m => ({ default: m.LicenseViolationDetailPage })));
 
 export function register(): void {
   // Supply chain routes — rendered dynamically via featureRegistry in DashboardPage

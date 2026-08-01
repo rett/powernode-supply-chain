@@ -10,7 +10,12 @@ vendor/bundle
 .byebug_history
 
 # Node / React
-node_modules/
+# No trailing slash: scripts/validate.sh SYMLINKS frontend/node_modules to the
+# platform's so tsc can resolve react etc. from an extension tree, and git
+# treats a symlink as a file — `node_modules/` matches directories only and
+# left that symlink showing as untracked, one `git add .` away from being
+# committed. The gate's comment assumes the extension .gitignore covers this.
+node_modules
 build/
 .env
 .env.local

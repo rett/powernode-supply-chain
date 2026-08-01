@@ -1,0 +1,32 @@
+{
+  "extends": "../../../frontend/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../../../frontend/src/*"],
+      "@/shared/*": ["../../../frontend/src/shared/*"],
+      "@/features/*": ["../../../frontend/src/features/*"],
+      "@/pages/*": ["../../../frontend/src/pages/*"],
+      "@/assets/*": ["../../../frontend/src/assets/*"],
+      "@supply-chain/*": ["./src/*"]
+    },
+    "noEmit": true
+  },
+  "include": [
+    "src",
+    "../../../frontend/src/*.d.ts",
+    "../../../frontend/src/shared/**/*.ts",
+    "../../../frontend/src/shared/**/*.tsx"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**",
+    "../../../frontend/src/shared/**/*.test.ts",
+    "../../../frontend/src/shared/**/*.test.tsx",
+    "../../../frontend/src/shared/**/*.spec.ts",
+    "../../../frontend/src/shared/**/*.spec.tsx",
+    "../../../frontend/src/shared/**/__tests__/**"
+  ]
+}
