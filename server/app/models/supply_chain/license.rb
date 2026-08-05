@@ -6,6 +6,15 @@ module SupplyChain
 
     self.table_name = "supply_chain_licenses"
 
+    # A global SPDX catalogue: one row per licence identifier (unique index on
+    # spdx_id), seeded rather than tenant-created, and carrying no account_id
+    # column at all. Every association below points DOWNSTREAM at per-tenant
+    # usages, so there is no owner to walk up to — a single MIT row is
+    # referenced by every account at once, which makes "the account this row
+    # belongs to" undefined rather than merely inconvenient. Audit writes are
+    # therefore suppressed instead of failing on every write.
+    audit_without_account! reason: "global SPDX licence catalogue, not tenant-owned data"
+
     # ============================================
     # Constants
     # ============================================

@@ -16,6 +16,10 @@ module SupplyChain
     # Associations
     # ============================================
     belongs_to :account, optional: true
+    # Only SOME rows are tenant-owned: account_id is nullable and a system
+    # template is shared across tenants. Those rows skip the audit write; a
+    # template that does belong to an account is audited normally.
+    audit_optional_account! reason: "system scan templates are shared across tenants and own no account"
     belongs_to :created_by, class_name: "User", optional: true
 
     has_many :scan_instances, class_name: "SupplyChain::ScanInstance",
